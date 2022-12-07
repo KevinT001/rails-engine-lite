@@ -8,14 +8,10 @@ class Api::V1::MerchantsController < ApplicationController
     render json: Merchant.find(params[:id])
   end
 
-  def create
-    render json: Merchant.create(merchant_params)
-  end
-
   private 
 
   def merchant_params 
-    params.require(:merchant).permit(:name)
+    params.require(:merchant).permit(:id, :name)
   end
 
 end

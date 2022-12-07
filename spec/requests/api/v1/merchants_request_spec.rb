@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe "Merchants API" do
   it "sends a list of merchants" do
-     create_list(:merchants, 10)
+     create_list(:merchant, 10)
 
       get '/api/v1/merchants'
 
@@ -21,7 +21,7 @@ describe "Merchants API" do
    end
 
    it 'can get one merchant by its id' do 
-    id create(:merchant).id 
+    id = create(:merchant).id 
 
     get "/api/v1/merchants/#{id}"
 
@@ -36,17 +36,36 @@ describe "Merchants API" do
     expect(merchant[:name]).to be_an(String)
    end
 
-   it 'can create a new merchant' do 
-    merchant_params = ({ 
-                        name: "Turing cheat sheet shop"
-                      })
-    headers = { "CONTENT_TYPE" => "applicaton/json" }
+   it 'can get all items for a given merchant ID' do 
+       id = create(:merchant).id 
+    
+      create_list(:item, 2)
 
-    post "/api/v1/merchants", headers: headers, params: JSON.generate(merchant: merchant_params)
-    created_merchant = Merchant.last 
+      get "/api/v1/merchants/#{id}/items"
 
-    expect(response).to be_successful
-    expect(created_merchant.name).to eq(merchant_params[:name])
+      items = JSON.parse(response.body, symbolize_names: true)
 
+      expect(response).to be_successful 
+
+      items[:data].each do |item|
+        expect(item).to have_key(:id)
+        expect(item[:id]).to be_an(String)
+
+        expect(item).to have_key(:type)
+        expect(item[:type]).to be_an(String)
+      
+        expect(item[:attributes]).to have_key(:name)
+        expect(item[:attributes][:name]).to be_an(String)
+        
+        expect(item[:attributes]).to have_key(:description)
+        expect(item[:attributes][:description]).to be_an(String)
+
+        expect(item[:attributes]).to have_key(:unit_price)
+        expect(item[:attributes][:unit_price]).to be_an(Float)
+
+        expect(item[:attributes]).to have_key(:merchant_id)
+        expect(item[:attributes][:merchant_id]).to be_an(Integer)
+
+      end
    end
 end
