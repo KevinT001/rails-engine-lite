@@ -1,7 +1,7 @@
 class Api::V1::MerchantsController < ApplicationController
 
   def index
-    render json: Merchant.all
+    render json: MerchantSerializer.new(Merchant.all)
   end
 
   def show 
@@ -10,8 +10,8 @@ class Api::V1::MerchantsController < ApplicationController
 
   private 
 
-  def merchant_params 
-    params.require(:merchant).permit(:id, :name)
-  end
+  # def merchant_params 
+  #   params.require(:merchant).permit(:id, :name)
+  # end
 
 end

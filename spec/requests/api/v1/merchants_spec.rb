@@ -1,10 +1,6 @@
 require 'rails_helper'
 
-describe "Merchants API" do 
-  it 'sends a list of all merchants' do 
-    create_list(:merchant, 10)
-    get '/api/v1/merchants'
-    expect(response).to be_successful
-  end
+RSpec.describe Merchant do 
 
+  it { should have_many :items}
 end
