@@ -59,7 +59,7 @@ describe 'Items API' do
   it 'can create a new item' do 
 
     id = create(:merchant).id
-    item_params = ({ name: "Mod 3 Instructor Cheat Sheet", 
+    item1 = ({ name: "Mod 3 Instructor Cheat Sheet", 
                      description: "Answers to all questions and tests",
                      unit_price: 300.00,
                      merchant_id: id 
@@ -67,16 +67,42 @@ describe 'Items API' do
 
     headers = { "CONTENT_TYPE" => "application/json" }
 
-    post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
+    post "/api/v1/items", headers: headers, params: JSON.generate(item: item1)
 
-    created_item = Item.last
+    created_item = Item.first
 
     expect(response).to be_successful
-    expect(created_item.name).to eq(item_params[:name])
-    expect(created_item.description).to eq(item_params[:description])
-    expect(created_item.unit_price).to eq(item_params[:unit_price])
-    expect(created_item.merchant_id).to eq(item_params[:merchant_id])
+    expect(created_item.name).to eq(item1[:name])
+    expect(created_item.description).to eq(item1[:description])
+    expect(created_item.unit_price).to eq(item1[:unit_price])
+    expect(created_item.merchant_id).to eq(item1[:merchant_id])
       
   end
+
+  it 'can update an existing item' do 
+    merchant = create(:merchant).id
+    item_id = create(:item).id
+    previous_name = Item.last.name
+    
+    item1 = ({ name: "Mod 3 Instructor Cheat Sheet", 
+              description: "Answers to all questions and tests",
+              unit_price: 300.00,
+              merchant_id: merchant 
+            })
+
+            
+            # new_item_name = { name: "Jeff's Private school info"} 
+            headers = { "CONTENT_TYPE" => "application/json" }
+
+    patch "/api/v1/items/#{item_id}", headers: headers, params: JSON.generate({item: item1})
+
+    item = Item.find_by(id: item_id )
+
+    expect(response).to be_successful
+    expect(item.name).to_not eq(previous_name)
+    expect(item.name).to eq("Mod 3 Instructor Cheat Sheet")
+
+  end
+
 
 end
