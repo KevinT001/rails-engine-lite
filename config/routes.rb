@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :items
       resources :merchants, only: [:index, :show] do
-        resources :items, only: [:index]
+        resources :items, controller: "merchant_items", only: [:index]
       end 
 
     end
